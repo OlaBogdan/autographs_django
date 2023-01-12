@@ -23,7 +23,7 @@ class Address(models.Model):
     zip_code = models.CharField(max_length=128)
     street = models.CharField(max_length=128)
     number = models.CharField(max_length=128)
-    additional_info = models.CharField(max_length=256)
+    additional_info = models.CharField(max_length=256, null=True)
 
 
 class Letter(models.Model):
@@ -31,7 +31,7 @@ class Letter(models.Model):
     address = models.ForeignKey(Address, on_delete=models.PROTECT)
     send_date = models.DateField()
     is_responded = models.BooleanField(default=False)
-    response_date = models.DateField(blank=True)
+    response_date = models.DateField(blank=True, null=True)
 
     def mark_as_responded(self):
         self.is_responded = True
@@ -47,3 +47,7 @@ class Letter(models.Model):
 
         if self.response_date and not self.is_responded:
             raise ValidationError(_('Letter is not set as responded!'))
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        return super(Letter, self).save(*args, **kwargs)
