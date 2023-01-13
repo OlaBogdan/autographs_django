@@ -31,7 +31,7 @@ class Address(models.Model):
     zip_code = models.CharField(max_length=128, verbose_name=_('Zip-code'))
     street = models.CharField(max_length=128, verbose_name=_('Street'))
     number = models.CharField(max_length=128, verbose_name=_('Number'))
-    additional_info = models.CharField(max_length=256, null=True, verbose_name=_('Additional information'))
+    additional_info = models.CharField(max_length=256, null=True, blank=True, verbose_name=_('Additional information'))
 
     def __str__(self):
         return f'{self.person} ({self.country}, {self.city})'
