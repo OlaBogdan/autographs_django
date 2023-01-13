@@ -5,33 +5,42 @@ from django.utils import timezone
 
 
 class Person(models.Model):
-    first_name = models.CharField(max_length=128)
-    last_name = models.CharField(max_length=128)
+    first_name = models.CharField(max_length=128, verbose_name=_('First name'))
+    last_name = models.CharField(max_length=128, verbose_name=_('Last name'))
 
     GENDER = (
         ('M', _('Male')),
         ('F', _('Female')),
     )
 
-    gender = models.CharField(choices=GENDER, max_length=1, default='M')
+    gender = models.CharField(choices=GENDER, max_length=1, default='M', verbose_name=_('Gender'))
+
+    def __str__(self):
+        return f'{self.first_name} {self.last_name}'
 
 
 class Address(models.Model):
-    person = models.ForeignKey(Person, related_name='addresses', on_delete=models.CASCADE)
-    country = models.CharField(max_length=128)
-    city = models.CharField(max_length=128)
-    zip_code = models.CharField(max_length=128)
-    street = models.CharField(max_length=128)
-    number = models.CharField(max_length=128)
-    additional_info = models.CharField(max_length=256, null=True)
+    person = models.ForeignKey(Person, related_name='addresses', on_delete=models.CASCADE, verbose_name=_('Person'))
+    country = models.CharField(max_length=128, verbose_name=_('Country'))
+    city = models.CharField(max_length=128, verbose_name=_('City'))
+    zip_code = models.CharField(max_length=128, verbose_name=_('Zip-code'))
+    street = models.CharField(max_length=128, verbose_name=_('Street'))
+    number = models.CharField(max_length=128, verbose_name=_('Number'))
+    additional_info = models.CharField(max_length=256, null=True, verbose_name=_('Additional information'))
+
+    def __str__(self):
+        return f'{self.person} ({self.country}, {self.city})'
 
 
 class Letter(models.Model):
-    to_whom = models.ForeignKey(Person, related_name='letters', on_delete=models.PROTECT)
-    address = models.ForeignKey(Address, on_delete=models.PROTECT)
-    send_date = models.DateField()
-    is_responded = models.BooleanField(default=False)
-    response_date = models.DateField(blank=True, null=True)
+    to_whom = models.ForeignKey(Person, related_name='letters', on_delete=models.PROTECT, verbose_name=_('To whom'))
+    address = models.ForeignKey(Address, on_delete=models.PROTECT, verbose_name=_('Address'))
+    send_date = models.DateField(verbose_name=_('Send date'))
+    is_responded = models.BooleanField(default=False, verbose_name=_('Is responded'))
+    response_date = models.DateField(blank=True, null=True, verbose_name=_('Response date'))
+
+    def __str__(self):
+        return f'{self.address}, {_("send")}: {self.send_date}'
 
     def mark_as_responded(self):
         self.is_responded = True

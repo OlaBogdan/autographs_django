@@ -59,3 +59,18 @@ class ModelsTestCase(TestCase):
             response_date=datetime.strptime('12-01-2023', '%d-%m-%Y')
         )
         self.assertRaises(ValidationError, letter.save)
+
+    def test_person_str(self):
+        self.assertEqual(str(self.person), 'Test Test')
+
+    def test_address_str(self):
+        self.assertEqual(str(self.address), 'Test Test (Test, Test)')
+
+    def test_letter_str(self):
+        letter = Letter.objects.create(
+            to_whom=self.person,
+            address=self.address,
+            send_date=datetime.strptime('10-01-2023', '%d-%m-%Y')
+        )
+
+        self.assertEqual(str(letter), 'Test Test (Test, Test), send: 2023-01-10')
