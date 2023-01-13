@@ -18,6 +18,11 @@ class Person(models.Model):
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['first_name', 'last_name'], name='unique name')
+        ]
+
 
 class Address(models.Model):
     person = models.ForeignKey(Person, related_name='addresses', on_delete=models.CASCADE, verbose_name=_('Person'))
